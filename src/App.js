@@ -1,8 +1,11 @@
+import { Route, Routes } from 'react-router-dom';
+import AuthPage from './pages/AuthPage';
+
 function App() {
   return (
-    <div className="App">
-      <h1>Hello world</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<AuthPage />} />
+    </Routes>
   );
 }
 
