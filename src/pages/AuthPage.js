@@ -4,6 +4,10 @@ import titleImage from '../images/instagram-title.png';
 import { AiFillFacebook } from 'react-icons/ai';
 import playStore from '../images/playstore.png';
 import appStore from '../images/appstore.png';
+import { validateEmail, validatePassword, validateUname, validateName, isEmailValid } from '../utils/authValidation';
+import { togglePasswordType } from '../utils/utils';
+import { signupUser, loginUser } from '../utils/authUser';
+
 
 const AuthPage = () => {
     const [email, setEmail] = useState('');
@@ -13,19 +17,48 @@ const AuthPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
 
-    const toggleLogin = () => {
-        setIsLogin(!isLogin);
+    const [validEmail, setValidEmail] = useState(false);
+    const [validPassword, setValidPassword] = useState(false);
+    const [validUname, setValidUname] = useState(false);
+    const [validName, setValidName] = useState(false);
+
+    const validate = () => {
+        if(isLogin) {
+            return isEmailValid(email) && validPassword
+        }
+        else{
+            return validEmail && validPassword && validUname && validName;
+        }
     }
 
-    const togglePasswordType = () => {
-        const password = document.getElementById('password');
-        if(password.type === 'password') {
-            password.type = 'text';
-            setShowPassword(true);
-        } else {
-            password.type = 'password';
-            setShowPassword(false);
+    const signUp = () => {
+        if(validate()) {
+            const user = signupUser(email,password,name,uname);
+            if(user){
+                alert('SignUp Successful')
+                setIsLogin(true);
+            }
+            else{
+                alert('SignUp Failed')
+            }
         }
+    }
+
+    const login = () => {
+        if(validate()) {
+            const user = loginUser(email,password);
+            console.log(user);
+            if(user){
+                alert('Login Successful')
+            }
+            else{
+                alert('Invalid Credentials')
+            }
+        }
+    }
+
+    const toggleLogin = () => {
+        setIsLogin(!isLogin);
     }
 
   return (
@@ -43,19 +76,19 @@ const AuthPage = () => {
                     </div>
                 </div>}
                 <div className='flex flex-col gap-2 mt-3'>
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Username or email address' />
-                    {!isLogin && <input value={name} onChange={(e) => setName(e.target.value)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Full Name' />}
-                    {!isLogin && <input value={name} onChange={(e) => setUname(e.target.value)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Username' />}
+                    <input required value={email} onChange={(e) => validateEmail(e.target.value,setEmail,setValidEmail)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Username or email address' />
+                    {!isLogin && <input required value={name} onChange={(e) => validateName(e.target.value,setName,setValidName)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Full Name' />}
+                    {!isLogin && <input required value={uname} onChange={(e) => validateUname(e.target.value,setUname,setValidUname)} type='text' className='rounded-sm border border-[#dbdbdb] text-sm p-2 w-72 outline-none' placeholder='Username' />}
                     
                     <div className='relative w-72'>
-                        <input value={password} onChange={(e) => setPassword(e.target.value)} id='password' type='password' className='w-72 border rounded-sm border-[#dbdbdb] text-sm p-2 outline-none' placeholder='Password' />
-                        {password && <button onClick={togglePasswordType} className='absolute right-0 top-2 mx-2 hover:text-gray-400 text-sm font-semibold'>{showPassword ? 'Hide' : 'Show'}</button>}
+                        <input required value={password} onChange={(e) => validatePassword(e.target.value,setPassword,setValidPassword)} id='password' type='password' className='w-72 border rounded-sm border-[#dbdbdb] text-sm p-2 outline-none' placeholder='Password' />
+                        {password && <button onClick={() => togglePasswordType(setShowPassword)} className='absolute right-0 top-2 mx-2 hover:text-gray-400 text-sm font-semibold'>{showPassword ? 'Hide' : 'Show'}</button>}
                     </div>
 
                     {!isLogin && <p className='my-1 w-72 text-center text-[#737373] text-xs'>People who use our service may have uploaded your contact information to Instagram. Learn more</p>}
                     {!isLogin && <p className='my-1 w-72 text-center text-[#737373] text-xs'>By signing up, you agree to our Terms, Privacy Policy and Cookies Policy.</p>}
 
-                    <button disabled={email && password ? false : true} className={`${email && password ? 'bg-[#4193EF] hover:bg-[#3975EA]':'bg-[#7AB3F4]'} mt-2 text-white py-2 rounded-lg text-sm font-semibold`}>{isLogin ? 'Log in' : 'Sign up'}</button>
+                    <button onClick={isLogin ? login : signUp} disabled={validate() ? false: true} className={`${validate() ? 'bg-[#4193EF] hover:bg-[#3975EA]':'bg-[#7AB3F4]'} mt-2 text-white py-2 rounded-lg text-sm font-semibold`}>{isLogin ? 'Log in' : 'Sign up'}</button>
                 </div>
                 {isLogin && <div className='relative border-b border-b-[#dbdbdb] w-full mx-2 my-6'>
                     <div className='bg-white absolute -top-3 left-28 w-16 flex justify-center items-center'>
