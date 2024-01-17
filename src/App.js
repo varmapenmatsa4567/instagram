@@ -3,6 +3,7 @@ import AuthPage from './pages/AuthPage';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import HomePage from './pages/HomePage';
 import { useState } from 'react';
+import Sidebar from './components/Sidebar';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,10 +18,17 @@ function App() {
     }
   });
 
-  return <Routes>
-    {user && <Route path="/" element={<HomePage/>} />}
-    {!user && <Route path="/" element={<AuthPage/>} />}
-  </Routes>
+  return <>
+    {user && (
+      <div className='flex bg-black w-screen min-h-screen'>
+        <Sidebar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </div>
+    )}
+    {!user && <Routes><Route path="/" element={<AuthPage/>} /></Routes>}
+  </>
   
 }
 
