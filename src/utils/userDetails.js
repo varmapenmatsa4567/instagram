@@ -1,7 +1,9 @@
 
 import { getAuth } from "firebase/auth";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where, updateDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase.config";
 
 export const getCurrentUser = async () => {
     const auth = getAuth();
@@ -31,4 +33,23 @@ export const getUser = async (username) => {
         console.log(querySnapshot.docs[0].data());
         return querySnapshot.docs[0].data();
     }
+}
+
+export const uploadProfile = async (file) => {
+    console.log(file);
+    const storageRef = ref(storage, `profile/${file.name}`);
+    const uploadTask = await uploadBytes(storageRef, file);
+    console.log(uploadTask);
+    const url = await getDownloadURL(uploadTask.ref);
+    console.log(url);
+    return url;
+}
+
+export const changeProfile = async (url) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const docRef = doc(db, "users", user.uid);
+    await updateDoc(docRef, {
+        profile: url,
+    });
 }

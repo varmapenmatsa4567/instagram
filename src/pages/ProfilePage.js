@@ -6,11 +6,17 @@ import ProfileItem from '../components/ProfileItem';
 import { BsGrid3X3 } from 'react-icons/bs';
 import { CiCamera } from 'react-icons/ci';
 import { BiBookmark, BiUserPin } from 'react-icons/bi';
+import { uploadProfile, changeProfile } from '../utils/userDetails';
+import { db } from '../firebase.config';
+import { collection, doc, getDoc, getDocs, query, where, updateDoc, onSnapshot } from "firebase/firestore";
 
 const ProfilePage = () => {
     const { username } = useParams();
     const [currentUser, setCurrentUser] = useState();
+    const [image, setImage] = useState();
     const [user, setUser] = useState();
+    const [profile, setProfile] = useState();
+
     useEffect(() => {
         getCurrentUser().then((user) => {
             setCurrentUser(user);
@@ -19,11 +25,27 @@ const ProfilePage = () => {
             setUser(user);
         });
     }, [])
+
+    const handleImage = (e) => {
+        console.log(e.target.files[0])
+        setImage(e.target.files[0]);
+        uploadProfile(e.target.files[0]).then((url) => {
+            changeProfile(url).then(() => {
+                console.log("Profile changed");
+                setUser({...user, profile: url});
+            });
+        });
+    }
+
+    const pickImage = () => {
+        document.getElementById('file').click();
+    }
   return (
     <div className='w-full flex justify-center'>
         <div className='w-2/3 flex flex-col'>
             <div className='my-6 flex'>
-                <img src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' className='w-36 h-36 rounded-full mx-20'/>
+                <img onClick={pickImage} className='w-36 h-36 rounded-full mx-20 cursor-pointer' src={user && "profile" in user && user.profile || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}/>
+                <input onChange={handleImage} id='file' type='file' className='hidden' accept='image/*'/>
                 <div className='flex flex-col gap-5'>
                     <div className='flex text-white items-center gap-4'>
                         <p className='text-lg'>{username}</p>
@@ -36,7 +58,7 @@ const ProfilePage = () => {
                         <p>0 followers</p>
                         <p>6 following</p>
                     </div>
-                    <p className='text-white text-sm font-semibold'>{user.name}</p>
+                    <p className='text-white text-sm font-semibold'>{user && user.name}</p>
                 </div>
             </div>
             <div className='border-t border-t-[#262626] w-full mt-5 flex justify-center gap-10'>
