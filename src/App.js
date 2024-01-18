@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import HomePage from './pages/HomePage';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -22,9 +23,12 @@ function App() {
     {user && (
       <div className='flex bg-black w-screen min-h-screen'>
         <Sidebar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
+        <div className='md:ml-[73px] xl:ml-[245px] w-full'>
+          <Routes>
+            <Route path="/" element={<HomePage/>} />
+            <Route path="/:username" element={<ProfilePage/>} />
+          </Routes>
+        </div>
       </div>
     )}
     {!user && <Routes><Route path="/" element={<AuthPage/>} /></Routes>}

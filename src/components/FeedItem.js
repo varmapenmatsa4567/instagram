@@ -4,9 +4,11 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { BiBookmark } from 'react-icons/bi';
 import { TbMessageCircle2,TbSend } from 'react-icons/tb';
 import Video from './Video';
+import Backdrop from './Backdrop';
 
 const FeedItem = ({ profile, uname, media, type }) => {
     const [comment, setComment] = useState('');
+    const [show, setShow] = useState(false);
   return (
     <div className='w-full flex flex-col gap-1'>
         <div className='flex items-center justify-between'>
@@ -16,7 +18,10 @@ const FeedItem = ({ profile, uname, media, type }) => {
                 <BsDot className='mt-1 text-[#A8A8A8]'/>
                 <p className='text-sm text-[#A8A8A8]'>1 w</p>
             </div>
-            <BsThreeDots className='text-white cursor-pointer'/>
+            <BsThreeDots className='text-white cursor-pointer' onClick={() => setShow(true)}/>
+            {show && <Backdrop>
+                    <p>Hello</p>
+                </Backdrop>}
         </div>
         <div className='rounded-md border border-[#262626]'>
             {type!='video' && <img className='rounded-md' src={media}/>}
