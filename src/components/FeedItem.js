@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsDot, BsThreeDots, BsEmojiSmile } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BiBookmark } from 'react-icons/bi';
 import { TbMessageCircle2,TbSend } from 'react-icons/tb';
 import Video from './Video';
 import Backdrop from './Backdrop';
+import { getUser } from '../utils/userDetails';
 
 const FeedItem = ({ profile, uname, media, type }) => {
     const [comment, setComment] = useState('');
     const [show, setShow] = useState(false);
+    const [user, setUser] = useState();
+    // console.log(uname);
+    useEffect(() => {
+        getUser(uname).then((user) => {
+            console.log("user"+user);
+            setUser(user);
+        });
+    }, [])
+    if(!user) return null;
   return (
     <div className='w-full flex flex-col gap-1'>
         <div className='flex items-center justify-between'>
             <div className='flex items-center'>
-                <img className='w-10 h-10 rounded-full' src={profile}/>
+                <img className='w-10 h-10 rounded-full' src={user.profile}/>
                 <p className='text-sm font-semibold ml-2'>{uname}</p>
                 <BsDot className='mt-1 text-[#A8A8A8]'/>
                 <p className='text-sm text-[#A8A8A8]'>1 w</p>

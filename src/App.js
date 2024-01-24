@@ -21,7 +21,7 @@ function App() {
 
   return <>
     {user && (
-      <div className='flex bg-black w-screen min-h-screen'>
+      <div className='flex bg-black w-screen overflow-x-hidden min-h-screen'>
         <Sidebar />
         <div className='md:ml-[73px] xl:ml-[245px] w-full'>
           <Routes>

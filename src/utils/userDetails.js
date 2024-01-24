@@ -35,9 +35,9 @@ export const getUser = async (username) => {
     }
 }
 
-export const uploadProfile = async (file) => {
+export const uploadProfile = async (file, username) => {
     console.log(file);
-    const storageRef = ref(storage, `profile/${file.name}`);
+    const storageRef = ref(storage, `profile/${username}`);
     const uploadTask = await uploadBytes(storageRef, file);
     console.log(uploadTask);
     const url = await getDownloadURL(uploadTask.ref);

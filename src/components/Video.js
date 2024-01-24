@@ -25,7 +25,7 @@ const Video = ({media}) => {
     }
   return (
     <div className='relative'>
-        <video onClick={playPause} className='w-full cursor-pointer' autoPlay muted loop>
+        <video  onClick={playPause} className='w-full cursor-pointer' autoPlay muted loop>
             <source src={media} type="video/mp4"/>
         </video>
         <div className='absolute right-2 bottom-2 cursor-pointer bg-black p-1 rounded-full'>
