@@ -5,22 +5,28 @@ import HomePage from './pages/HomePage';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import ProfilePage from './pages/ProfilePage';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, removeUser } from './store/user';
+import { getCurrentUser } from './utils/userDetails';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const isAuth = useSelector((state) => state.user.isAuth);
+  const dispatch = useDispatch();
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    console.log(user);
-    if(user){
-      setUser(user);
+  onAuthStateChanged(auth, (data) => {
+    console.log(data);
+    if(data){
+      getCurrentUser().then((user) => {
+        dispatch(setUser(user));
+      });
     }
     else{
-      setUser(null);
+      dispatch(removeUser());
     }
   });
 
   return <>
-    {user && (
+    {isAuth && (
       <div className='flex bg-black w-screen overflow-x-hidden min-h-screen'>
         <Sidebar />
         <div className='md:ml-[73px] xl:ml-[245px] w-full'>
@@ -31,7 +37,7 @@ function App() {
         </div>
       </div>
     )}
-    {!user && <Routes><Route path="/" element={<AuthPage/>} /></Routes>}
+    {!isAuth && <Routes><Route path="/" element={<AuthPage/>} /></Routes>}
   </>
   
 }

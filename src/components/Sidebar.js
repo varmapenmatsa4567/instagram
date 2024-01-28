@@ -15,25 +15,20 @@ import { useNavigate } from 'react-router-dom';
 import { FaPhotoVideo } from 'react-icons/fa';
 import { BiArrowBack } from 'react-icons/bi';
 import Backdrop from './Backdrop';
-import { createPost, uploadFile } from '../utils/postOpertions';
+import { createPost, uploadFiles } from '../utils/postOpertions';
 import { BsCheckCircle } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
    const currentPath = useLocation().pathname;
    const navigate = useNavigate();
-   const [user, setUser] = useState();
+   const user = useSelector((state) => state.user.user);
    const [createModal, setCreateModal] = useState(false);
    const modes = ['Create new post', 'Crop', 'Create new Post', 'Sharing', 'Post Shared'];
    const [mode, setMode] = useState(0);
    const [files, setFiles] = useState([]);
    const [selectedImage, setSelectedImage] = useState(null);
    const [caption, setCaption] = useState('');
-
-   useEffect(() => {
-      getCurrentUser().then((user) => {
-         setUser(user);
-      });
-   }, [])
 
    const changeMode = (x) => {
       setMode((prev) => prev + x);
@@ -51,8 +46,8 @@ const Sidebar = () => {
       if(mode == 2){
          changeMode(1);
          console.log("uploading");
-         uploadFile(files[0]).then((url) => {
-            createPost(user.username, caption, url).then(() => {
+         uploadFiles(files).then((urls) => {
+            createPost(user.username, caption, urls).then(() => {
                console.log("Post created");
                changeMode(1);
             })

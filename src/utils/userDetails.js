@@ -4,6 +4,8 @@ import { collection, doc, getDoc, getDocs, query, where, updateDoc } from "fireb
 import { db } from "../firebase.config";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase.config";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/user";
 
 export const getCurrentUser = async () => {
     const auth = getAuth();
